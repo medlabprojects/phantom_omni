@@ -27,9 +27,19 @@ find_package(Eigen3 REQUIRED NO_MODULE)
    std_msgs
  )
 
+set(MathTools_DIR
+  /home/remireaa/Documents/LIBRARIES/MathTools
+)
+
+set(MedlabCommon_DIR
+  /home/remireaa/catkin_ws/src/medlab_common
+)
+
 set(${PROJECT_NAME}_INCLUDE_DIRECTORIES
     include
-    /home/remireaa/catkin_ws/src/medlab_common/include
+    ${MedlabCommon_DIR}/include
+    ${MathTools_DIR}
+    ${EIGEN3_INCLUDE_DIR}
     "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}"
 )
 
@@ -61,7 +71,6 @@ catkin_package(
     roscpp
     std_msgs
     message_runtime
-#    medlab_common
 )
 
 ###########
@@ -73,8 +82,6 @@ catkin_package(
 include_directories(
   ${${PROJECT_NAME}_INCLUDE_DIRECTORIES}
   ${catkin_INCLUDE_DIRS}
-  /home/remireaa/Documents/LIBRARIES/MathTools
-  ${EIGEN3_INCLUDE_DIR}
 )
 
 add_library(${PROJECT_NAME}
