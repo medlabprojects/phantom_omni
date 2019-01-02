@@ -9,7 +9,7 @@ find_package(catkin
     roscpp
     std_msgs
     message_generation
-    medlab_common
+#    medlab_common
 )
 
 find_package(Qt5Core REQUIRED) # needed for signals/slots in PhantomOmniRos class
@@ -29,6 +29,7 @@ find_package(Eigen3 REQUIRED NO_MODULE)
 
 set(${PROJECT_NAME}_INCLUDE_DIRECTORIES
     include
+    /home/remireaa/catkin_ws/src/medlab_common/include
     "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}"
 )
 
@@ -60,7 +61,7 @@ catkin_package(
     roscpp
     std_msgs
     message_runtime
-    medlab_common
+#    medlab_common
 )
 
 ###########
