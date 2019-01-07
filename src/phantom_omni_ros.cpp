@@ -1,15 +1,14 @@
 #include <phantom_omni/phantom_omni_ros.h>
 #include <medlab_common/robotics_math.h>
+#include <phantom_omni/OmniState.h>
+#include <std_msgs/Float32.h>
+#include <ros/ros.h>
 
 #include <QObject>
 #include <Eigen/Dense>
 #include <algorithm>
 #include <iterator>
 #include <string>
-#include <phantom_omni/OmniState.h>
-#include <std_msgs/Float32.h>
-#include <Mtransform.h>
-#include <ros/ros.h>
 
 
 using namespace Eigen;
@@ -55,8 +54,8 @@ void PhantomOmniRos::omniCallback(const phantom_omni::OmniState &msg)
   // Rotate Omni frame by 180 deg about Y to modify pose
   Eigen::Matrix4d omniReg1 = Eigen::Matrix4d::Identity();
   Eigen::MatrixXd rotationY = Eigen::AngleAxisd(M_PI,Eigen::Vector3d::UnitY()).toRotationMatrix();
-  Mtransform::SetRotation(omniReg1,rotationY);
-  Eigen::Matrix4d omniReg1Inv = Mtransform::Inverse(omniReg1);
+  RoboticsMath::SetRotation(omniReg1,rotationY);
+  Eigen::Matrix4d omniReg1Inv = RoboticsMath::Inverse(omniReg1);
   Eigen::Matrix4d pose_temp_reg;
   pose_temp_reg = omniReg1Inv*pose_d*omniReg1;
   pose_ = pose_temp_reg.cast<double>();
@@ -84,7 +83,7 @@ void PhantomOmniRos::setForceScaling(double force_scaling)
   force_scale_factor_ = force_scaling;
 
   std_msgs::Float32 msg;
-  msg.data = force_scale_factor_;
+  msg.data = static_cast<float>(force_scale_factor_);
   pub_set_force_scaling_.publish(msg);
 }
 
@@ -94,7 +93,7 @@ int PhantomOmniRos::getButtonState()
   // 1 => button 1 pressed
   // 2 => button 2 pressed
   // 3 => both 1 & 2 pressed
-  return ((int)(button_states_[0])+(int)(button_states_[1]));
+  return (static_cast<int>(button_states_[0]) + static_cast<int>(button_states_[1]));
 }
 
 RoboticsMath::Vector6d PhantomOmniRos::twistUpdate()
@@ -102,7 +101,7 @@ RoboticsMath::Vector6d PhantomOmniRos::twistUpdate()
   // This uses pose_ and posePrev_ to update desTwist
 
   // compute change
-  Eigen::Matrix4d omniDeltaOmniPenCoords = Mtransform::Inverse(pose_prev_)*pose_;
+  Eigen::Matrix4d omniDeltaOmniPenCoords = RoboticsMath::Inverse(pose_prev_)*pose_;
 
   // convert [mm] to [m] and scale down by omniScaleFactor
   omniDeltaOmniPenCoords.block(0,3,3,1) = omniDeltaOmniPenCoords.block(0,3,3,1)/1.0E3;
@@ -110,7 +109,7 @@ RoboticsMath::Vector6d PhantomOmniRos::twistUpdate()
 
   // ????
   Eigen::Matrix4d RposePrev = RoboticsMath::assembleTransformation(pose_prev_.block(0,0,3,3), Eigen::Vector3d::Zero());
-  Eigen::Matrix4d omniDeltaOmniBaseCoords = (Mtransform::Inverse(RposePrev.transpose())*omniDeltaOmniPenCoords*RposePrev.transpose());
+  Eigen::Matrix4d omniDeltaOmniBaseCoords = (RoboticsMath::Inverse(RposePrev.transpose())*omniDeltaOmniPenCoords*RposePrev.transpose());
 
 //  Eigen::Matrix3d Rd = pose_.block<3,3>(0,0);
 //  Eigen::Matrix3d Rc = pose_prev_.block<3,3>(0,0);

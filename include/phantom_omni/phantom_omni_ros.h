@@ -10,7 +10,6 @@
 #include <medlab_common/robotics_math.h>
 #include <ros/ros.h>
 
-
 Q_DECLARE_METATYPE(RoboticsMath::Vector6d)
 
 class PhantomOmniRos  : public QObject
