@@ -93,7 +93,7 @@ int PhantomOmniRos::getButtonState()
   // 1 => button 1 pressed
   // 2 => button 2 pressed
   // 3 => both 1 & 2 pressed
-  return (static_cast<int>(button_states_[0]) + static_cast<int>(button_states_[1]));
+  return (static_cast<int>(button_states_[0]) + 2 * static_cast<int>(button_states_[1]));
 }
 
 RoboticsMath::Vector6d PhantomOmniRos::twistUpdate()
